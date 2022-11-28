@@ -1,0 +1,149 @@
+fragment post on Post {
+  id
+  title
+  content
+  user {
+    id
+    username
+    email
+  }
+  createdAt
+}
+
+mutation AUTHENTICATE_USER(
+  $identifier: String = ""
+  $password: String = ""
+) {
+  login(
+    input: {
+      identifier: $identifier
+      password: $password
+    }
+  ) {
+    jwt
+    user {
+      id
+      username
+      email
+    }
+  }
+}
+
+query GET_POSTS {
+  posts(sort: "id:DESC") {
+    ...post
+  }
+}
+
+mutation CREATE_POST_1(
+  $title: String = ""
+  $content: String = ""
+  $user: ID = ""
+) {
+  createPost(
+    input: {
+      data: {
+        title: $title
+        content: $content
+        user: $user
+      }
+    }
+  ) {
+    post {
+      ...post
+    }
+  }
+}
+
+mutation CREATE_POST_2(
+  $data: PostInput
+) {
+  createPost(input: { data: $data }) {
+    post {
+      ...post
+    }
+  }
+}
+
+mutation CREATE_POST_3(
+  $input: createPostInput
+) {
+  createPost(input: $input) {
+    post {
+      ...post
+    }
+  }
+}
+
+mutation UPDATE_POST(
+  $id: ID!
+  $title: String
+  $content: String
+  $user: ID
+) {
+  updatePost(
+    input: {
+      data: {
+        title: $title
+        content: $content
+        user: $user
+      }
+      where: { id: $id }
+    }
+  ) {
+    post {
+      ...post
+    }
+  }
+}
+
+mutation DELETE_POST($id: ID!) {
+  deletePost(
+    input: { where: { id: $id } }
+  ) {
+    post {
+      ...post
+    }
+  }
+}
+
+# Write your query or mutation here
+mutation REGISTER_USER(
+  $email: String!
+  $username: String!
+  $password: String!
+) {
+  register(input: { email: $email, username: $username, password: $password }) {
+    jwt
+    user {
+      id
+      username
+      email
+    }
+  }
+}
+
+mutation FORGOT_PASSWORD($email: String!) {
+  forgotPassword(email: $email) {
+    ok
+  }
+}
+
+mutation RESET_PASSWORD(
+  $code: String!
+  $password: String!
+  $passwordConfirmation: String!
+) {
+  resetPassword(
+    code: $code
+    password: $password
+    passwordConfirmation: $passwordConfirmation
+  ) {
+    jwt
+    user {
+      id
+      username
+      email
+    }
+  }
+}
